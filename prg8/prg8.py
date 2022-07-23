@@ -1,3 +1,6 @@
+import sys
+
+
 if __name__ == "__main__":
     files = [
         open("n1.txt", "r"),
@@ -10,12 +13,28 @@ if __name__ == "__main__":
         open("n8.txt", "r"),
     ]
 
+    mergeFile = open("merge.txt", "w")
+
     names = []
     for file in files:
-        fileContent = [content.strip() for content in file.readlines()]
-        names.extend(fileContent)
+        fileContent = file.readline().strip()
+        names.append(fileContent)
 
-    names.sort()
+    while True:
+        low = 0
+        for i in range(8):
+            if names[i] < names[low]:
+                low = i
 
-    with open("merge.txt", "w") as f:
-        f.writelines([name + "\n" for name in names])
+        if names[low] == "~":
+            mergeFile.close()
+            for file in files:
+                file.close()
+            sys.exit()
+
+        mergeFile.write(f"{names[low]}\n")
+        print(names[low])
+        names[low] = files[low].readline().strip()
+
+        if files[low].read() == "":
+            names[low] = "~"
