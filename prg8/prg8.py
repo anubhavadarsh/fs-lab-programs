@@ -36,5 +36,5 @@ if __name__ == "__main__":
         print(names[low])
         names[low] = files[low].readline().strip()
 
-        if files[low].read() == "":
+        if names[low] == "":
             names[low] = "~"
