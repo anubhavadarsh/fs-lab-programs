@@ -3,7 +3,7 @@ from typing import List
 import sys
 
 
-def checkMaxLen(val: str, max: int):
+def checkMaxLen(val: str, max: int = 10):
     if len(val) > max:
         print("exceeded maximum limit!")
         sys.exit()
@@ -61,7 +61,7 @@ class Student:
             self.__index.sort(key=(lambda pindex: pindex.key))
 
     def delrec(self):
-        usn = checkMaxLen(input("Enter usn to be deleted: "))
+        usn = checkMaxLen(input("Enter usn to be deleted: "), self.__USNMAX)
         pos = self.search(usn.strip())
 
         if pos == -1:
