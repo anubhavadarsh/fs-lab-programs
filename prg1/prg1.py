@@ -24,13 +24,26 @@ def fileToFile():
             f.write(f"{name[::-1]}\n")
 
 
+def fileToStd():
+    iFname = input("Enter the input file name: ")
+    ifile = open(iFname, "r")
+    names = [
+        name.strip() for name in ifile.readlines()
+    ]  # remove newline from the end of the records
+
+    for name in names:
+        print(name[::-1])
+
+
 if __name__ == "__main__":
     while True:
-        print("\n1. std input to std output\n2. file to file\n")
+        print("\n1. std input to std output\n2. file to file\n3. file to std\n")
         ch = int(input("Enter your choice: "))
         if ch == 1:
             stdToStd()
         elif ch == 2:
             fileToFile()
+        elif ch == 3:
+            fileToStd()
         else:
             break

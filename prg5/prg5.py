@@ -127,8 +127,6 @@ class Student:
             f.seek(stu.__index[pos].offset)
             self.unpack(f.readline().strip())
 
-        self.recordsNum = self.recordsNum - 1
-
 
 if __name__ == "__main__":
     filename = input("Enter file name: ")

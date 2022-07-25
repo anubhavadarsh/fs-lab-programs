@@ -1,26 +1,24 @@
 import sys
-import os
+from typing import List
 
 
 def checkMaxLen(val: str, max: int):
     if len(val) > max:
-        print(f"exceed maximum specified length {max}")
+        print(f"exceeds maximum specified length {max}")
         sys.exit()
 
     return val
 
 
 class Student:
-    # private data members:
+    # private data members
     __USNMAX = 15
     __NAMMAX = 15
     __BRNMAX = 10
 
-    __outfile = "out.txt"
-
     def __init__(self, filename):
         self.filename = filename
-        self.recordsNum = 0
+        self.__rrnList: List[int] = []
         self.__initializeFile()
 
     def __initializeFile(self):
@@ -40,16 +38,15 @@ class Student:
         record = self.pack()
 
         with open(self.filename, "a") as f:
+            self.__rrnList.append(f.tell())
             f.write(f"{record}\n")
-
-        self.recordsNum = self.recordsNum + 1
 
     def unpack(self, record):
         [usn, name, branch, *_] = record.split("|")
         print(f"usn: {usn} name: {name} branch: {branch}")
 
     def display(self):
-        if self.recordsNum == 0:
+        if len(self.__rrnList) == 0:
             print(f"No records to be displayed!")
             return
 
@@ -59,41 +56,20 @@ class Student:
             for re in records:
                 self.unpack(re)
 
-    def searchAndModify(self):
-        if self.recordsNum == 0:
+    def searchByRRN(self):
+        if len(self.__rrnList) == 0:
             print(f"No records to search!")
             return
 
-        key = checkMaxLen(input("enter the usn to search: "), self.__USNMAX).strip()
+        rrn = int(input("enter rrn to search: "))
 
-        outFile = open(self.__outfile, "w")
-        reFile = open(self.filename, "r+")
-        for i in range(self.recordsNum):
-            record = reFile.readline().strip()
-            [usn, *_] = record.split("|")
+        if rrn > len(self.__rrnList) - 1:
+            print(f"Record with RRN {rrn} not found!")
+            return
 
-            if usn == key:
-                print("record found!")
-                self.unpack(record)
-
-                ch = int(input("Do you wish to modify? press 1 to do so: "))
-
-                if ch == 1:
-                    newRecord = self.pack()
-                    outFile.writelines([f"{newRecord}\n"] + reFile.readlines())
-                    reFile.close()
-                    outFile.close()
-                    os.remove(self.filename)
-                    os.rename(self.__outfile, self.filename)
-
-                    print("new record written successfully!")
-
-                    break
-
-                outFile.close()
-                os.remove(self.__outfile)
-
-            outFile.write(f"{record}\n")
+        with open(self.filename, "r") as f:
+            f.seek(self.__rrnList[rrn])
+            self.unpack(f.readline().strip())
 
 
 if __name__ == "__main__":
@@ -104,8 +80,8 @@ if __name__ == "__main__":
     while True:
         ch = int(
             input(
-                "\n1. Insert\n2. Display\n3. Search and Modify\n4. Exit\
-                \nPlease choose an option to continue: "
+                "\n1. Insert\n2. Display\n3. Search by RRN\n4. Exit\
+				\nPlease choose an option to continue: "
             )
         )
 
@@ -114,7 +90,7 @@ if __name__ == "__main__":
         elif ch == 2:
             stu.display()
         elif ch == 3:
-            stu.searchAndModify()
+            stu.searchByRRN()
         elif ch == 4:
             break
         else:
